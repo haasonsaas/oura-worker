@@ -1,31 +1,38 @@
 export interface EmailEnv {
+  RESEND_API_KEY: string;
   FROM_EMAIL: string;
   TO_EMAIL: string;
 }
 
 export async function sendEmail(env: EmailEnv, subject: string, text: string) {
+  console.log('Attempting to send email...');
+  console.log('From:', "digest@haasonsaas.com");
+  console.log('To:', env.TO_EMAIL);
+  console.log('Subject:', subject);
+
   const payload = {
-    personalizations: [
-      { to: [{ email: env.TO_EMAIL }] },
-    ],
-    from: { 
-      email: env.FROM_EMAIL,
-      name: "Oura Daily Report"
-    },
+    from: "digest@haasonsaas.com",
+    to: env.TO_EMAIL,
     subject,
-    content: [
-      { type: 'text/plain', value: text },
-    ],
+    html: `<pre>${text}</pre>`,
   };
 
-  const resp = await fetch('https://api.mailchannels.net/tx/v1/send', {
+  console.log('Sending payload:', JSON.stringify(payload, null, 2));
+
+  const resp = await fetch('https://api.resend.com/emails', {
     method: 'POST',
-    headers: { 'content-type': 'application/json' },
+    headers: { 
+      'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+      'Content-Type': 'application/json' 
+    },
     body: JSON.stringify(payload),
   });
 
+  const body = await resp.text();
+  console.log('Response status:', resp.status);
+  console.log('Response body:', body);
+
   if (!resp.ok) {
-    const body = await resp.text();
     throw new Error(`Mail send failed: ${resp.status} ${body}`);
   }
 }
