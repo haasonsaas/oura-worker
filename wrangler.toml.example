@@ -1,0 +1,12 @@
+name = "oura-day-after-worker"
+type = "javascript"
+account_id = "<YOUR_CLOUDFLARE_ACCOUNT_ID>"
+workers_dev = true
+compatibility_date = "2024-04-28"
+main = "src/index.ts"
+
+[triggers]
+crons = ["0 15 * * *"] # 8am PT (15 UTC)
+
+[vars]
+TIMEZONE = "America/Los_Angeles" 
