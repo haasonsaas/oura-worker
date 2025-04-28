@@ -16,48 +16,69 @@ A Cloudflare Worker that sends daily Oura Ring health metrics via email. This se
 - Oura Ring account with API access
 - Email service (configured in Cloudflare Workers)
 
-## Environment Variables
+## Setup Instructions
 
-The following environment variables need to be set in your Cloudflare Workers configuration:
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/haasonsaas/oura-worker.git
+   cd oura-worker
+   ```
 
-- `OURA_API_KEY`: Your Oura Ring API key
-- `FROM_EMAIL`: The email address to send from
-- `TO_EMAIL`: The recipient email address
-- `TIMEZONE`: Your preferred timezone (default: "America/Los_Angeles")
-
-## Installation
-
-1. Clone this repository
 2. Install dependencies:
    ```bash
-   npm install
+   bun install
    ```
-3. Configure your `wrangler.toml` with your Cloudflare account ID
-4. Deploy to Cloudflare Workers:
+
+3. Create your wrangler.toml:
    ```bash
-   npx wrangler deploy
+   cp wrangler.toml.example wrangler.toml
    ```
 
-## Development
+4. Configure wrangler.toml:
+   - Replace `<YOUR_CLOUDFLARE_ACCOUNT_ID>` with your Cloudflare account ID
+   - You can find your account ID in the Cloudflare dashboard
+   - Adjust the cron schedule if needed (default is 8 AM PT / 15:00 UTC)
+   - Set your preferred timezone in the `[vars]` section
 
-The project is written in TypeScript and uses Cloudflare Workers. The main components are:
+5. Set up your secrets in Cloudflare:
+   ```bash
+   bunx wrangler secret put OURA_API_KEY
+   bunx wrangler secret put FROM_EMAIL
+   bunx wrangler secret put TO_EMAIL
+   ```
 
-- `src/index.ts`: Main worker logic and request handling
-- `src/oura_api.ts`: Oura Ring API integration
-- `src/send_email.ts`: Email sending functionality
+6. Deploy the worker:
+   ```bash
+   bunx wrangler deploy
+   ```
 
-## Configuration
+## Testing
 
-The worker is configured to run daily at 8 AM PT (15:00 UTC). You can modify the schedule in `wrangler.toml`:
+You can test the worker in two ways:
 
-```toml
-[triggers]
-crons = ["0 15 * * *"] # 8am PT (15 UTC)
+1. View the digest in your browser:
+   ```
+   https://<your-worker>.workers.dev
+   ```
+
+2. Trigger the email manually:
+   ```bash
+   curl "https://<your-worker>.workers.dev/__scheduled?cron=*+*+*+*+*"
+   ```
+
+## Monitoring
+
+To view logs in real-time:
+```bash
+bunx wrangler tail
 ```
 
-## Manual Testing
+## Environment Variables
 
-You can test the worker by making a GET request to your worker's URL. This will return the digest in HTML format.
+- `OURA_API_KEY`: Your Oura Ring API key
+- `FROM_EMAIL`: The email address that will send the daily reports
+- `TO_EMAIL`: The email address that will receive the daily reports
+- `TIMEZONE`: Your preferred timezone (default: "America/Los_Angeles")
 
 ## License
 
