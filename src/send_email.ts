@@ -1,7 +1,7 @@
 export interface EmailEnv {
   RESEND_API_KEY: string;
   FROM_EMAIL: string;
-  TO_EMAIL: string;
+  TO_EMAIL?: string;
 }
 
 export async function sendEmail(env: EmailEnv, subject: string, text: string) {
@@ -12,7 +12,7 @@ export async function sendEmail(env: EmailEnv, subject: string, text: string) {
 
   const payload = {
     from: env.FROM_EMAIL,
-    to: env.TO_EMAIL,
+    to: env.TO_EMAIL || 'jonathan@0xhaas.com',
     subject,
     html: `<pre>${text}</pre>`,
   };

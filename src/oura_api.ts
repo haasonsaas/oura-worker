@@ -26,15 +26,23 @@ export async function fetchOuraSummary(env: { OURA_API_KEY: string }): Promise<O
     fetch('https://api.ouraring.com/v2/usercollection/daily_cardio_recovery', { headers }).then(r => r.json()).catch(() => null)
   ]);
 
+  console.log('Raw sleep data:', JSON.stringify(sleepData, null, 2));
   const readiness = readinessData.data?.[0];
   const sleep = sleepData.data?.[0];
+  console.log('Sleep object:', JSON.stringify(sleep, null, 2));
+  console.log('Sleep duration:', sleep?.contributors?.total_sleep);
   const activity = activityData.data?.[0];
   const vo2Max = vo2MaxData?.data?.[0];
 
   return {
     readiness_score: readiness?.score ?? 'N/A',
     sleep_score: sleep?.score ?? 'N/A',
-    sleep_duration: sleep ? (sleep.total_sleep_duration / 3600).toFixed(1) : 'N/A',
+    sleep_duration: sleep?.contributors?.total_sleep ? 
+      (sleep.contributors.total_sleep / 10).toFixed(1) : 
+      (() => {
+        console.error('Invalid sleep duration:', sleep?.contributors?.total_sleep);
+        return 'N/A';
+      })(),
     activity_score: activity?.score ?? 'N/A',
     total_steps: activity?.steps ?? 'N/A',
     vo2_max: vo2Max?.vo2_max ?? undefined,
