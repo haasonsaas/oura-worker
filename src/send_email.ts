@@ -6,12 +6,12 @@ export interface EmailEnv {
 
 export async function sendEmail(env: EmailEnv, subject: string, text: string) {
   console.log('Attempting to send email...');
-  console.log('From:', "digest@haasonsaas.com");
+  console.log('From:', env.FROM_EMAIL);
   console.log('To:', env.TO_EMAIL);
   console.log('Subject:', subject);
 
   const payload = {
-    from: "digest@haasonsaas.com",
+    from: env.FROM_EMAIL,
     to: env.TO_EMAIL,
     subject,
     html: `<pre>${text}</pre>`,
