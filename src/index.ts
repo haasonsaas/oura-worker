@@ -55,12 +55,27 @@ async function buildDigest(env: Env) {
 
     return `Good morning! Here's your Oura report:
 
-🛏️ Sleep Score: ${data.sleep_score}
-🔥 Readiness Score: ${data.readiness_score}
-🏃 Activity Score: ${data.activity_score}
+🏃‍♂️ Activity & Fitness
+------------------------
+Activity Score: ${data.activity_score}
+Total Steps: ${data.total_steps}
+${data.vo2_max ? `VO2 Max: ${data.vo2_max}` : ''}
 
-👉 Sleep Duration: ${data.sleep_duration}h
-👉 Total Steps: ${data.total_steps}
+😴 Sleep Quality
+------------------------
+Sleep Score: ${data.sleep_score}
+Total Sleep: ${data.sleep_duration}h
+${data.deep_sleep_duration ? `Deep Sleep: ${data.deep_sleep_duration}h` : ''}
+${data.rem_sleep_duration ? `REM Sleep: ${data.rem_sleep_duration}h` : ''}
+${data.sleep_latency ? `Time to Fall Asleep: ${Math.round(data.sleep_latency / 60)}min` : ''}
+
+💪 Recovery & Readiness
+------------------------
+Readiness Score: ${data.readiness_score}
+${data.hrv ? `Heart Rate Variability: ${data.hrv}` : ''}
+${data.temperature_deviation ? `Temperature Deviation: ${data.temperature_deviation}°C` : ''}
+${data.stress_level ? `Stress Balance: ${data.stress_level}` : ''}
+${data.recovery_index ? `Recovery Index: ${data.recovery_index}` : ''}
 `;
   } catch (error) {
     console.error('Error in buildDigest:', error);
