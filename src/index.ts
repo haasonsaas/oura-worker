@@ -53,7 +53,19 @@ async function buildDigest(env: Env) {
     const data = await fetchOuraSummary(env);
     console.log('Oura data received:', data);
 
-    return `Good morning! Here's your Oura report:
+    // Get current hour in the user's timezone
+    const now = new Date();
+    const hour = now.getHours();
+    
+    // Determine appropriate greeting based on time of day
+    let greeting = 'Good morning';
+    if (hour >= 12 && hour < 17) {
+      greeting = 'Good afternoon';
+    } else if (hour >= 17 || hour < 5) {
+      greeting = 'Good evening';
+    }
+
+    return `${greeting}! Here's your Oura report:
 
 🏃‍♂️ Activity & Fitness
 ------------------------
