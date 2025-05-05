@@ -55,7 +55,8 @@ async function buildDigest(env: Env) {
 
     // Get current hour in the user's timezone
     const now = new Date();
-    const hour = now.getHours();
+    const userTime = new Date(now.toLocaleString('en-US', { timeZone: env.TIMEZONE }));
+    const hour = userTime.getHours();
     
     // Determine appropriate greeting based on time of day
     let greeting = 'Good morning';
